@@ -3,7 +3,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import RoleCard from "../components/RoleCard";
 
-const roles = ["Investor", "Founder", "Enthusiast"];
+const roles = ["Company", "Enthusiast"];
 
 const HomePage = () => {
   const navigate = useNavigate();
