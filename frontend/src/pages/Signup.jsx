@@ -71,7 +71,7 @@ export default function SignupCompany() {
       >
         <Paper
           elevation={6}
-          sx={{ p: 3.5, borderRadius: "20px", width: "80%", maxWidth: 450,position:"relative" }}
+          sx={{ p: 1.5, borderRadius: "20px", width: "80%", maxWidth: 450,position:"relative" }}
         >
           <Typography variant="h4" gutterBottom align="center">
             Company Sign Up

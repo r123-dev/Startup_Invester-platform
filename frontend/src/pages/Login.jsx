@@ -26,7 +26,8 @@ export default function LoginCompany() {
   };
 
   return (
-    <Grid container sx={{ minHeight: "100vh" }}>
+    <Grid container sx={{ minHeight:"100vh"
+        }}>
       {/* Left Side Form */}
       <Grid
         item
@@ -38,7 +39,7 @@ export default function LoginCompany() {
       >
         <Paper
           elevation={6}
-          sx={{ p: 3.5, borderRadius: "20px", width: "80%", maxWidth: 450 }}
+          sx={{ p: 3, borderRadius: "20px", width: "80%", maxWidth: 450 }}
         >
           <Typography variant="h4" gutterBottom align="center">
             Company Login
