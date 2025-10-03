@@ -68,7 +68,7 @@ const HomePage = () => {
           {roles.map((role) => (
             <Grid item key={role}>
               <RoleCard
-                onClick={() => navigate(`/login-${role.toLowerCase()}`)}
+                onClick={() => navigate(`/Signup${role}`)}
                 role={role}
               />
             </Grid>
