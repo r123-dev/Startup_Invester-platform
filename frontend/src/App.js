@@ -1,14 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import SignupCompany from "./pages/Signup";
-import LoginCompany from "./pages/Login";
+import SignupCompany from "./pages/Company/Signup";
+import LoginCompany from "./pages/Company/Login";
+import SignupEnthusiast from "./pages/Enthusiast/Signup"
+import LoginEnthusiast from "./pages/Enthusiast/Login"
 
-const LoginPage = ({ role }) => (
-  <div style={{ textAlign: "center", marginTop: "100px" }}>
-    <h2>Login / Signup as {role}</h2>
-  </div>
-);
+
 
 function App() {
   return (
@@ -17,7 +15,9 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/LoginCompany" element={<LoginCompany />} />
         <Route path="/SignupCompany" element={<SignupCompany  />} />
-        <Route path="/login-enthusiast" element={<LoginPage role="Enthusiast" />} />
+        <Route path="/SignupEnthusiast" element={<SignupEnthusiast role="Enthusiast" />} />
+
+        <Route path="/LoginEnthusiast" element={<LoginEnthusiast/>}/>
       </Routes>
     </Router>
   );
