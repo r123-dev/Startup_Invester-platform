@@ -136,20 +136,7 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
             onSubmit={handleSubmit}
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
-            <FormControl>
-              <FormLabel htmlFor="name">Full name</FormLabel>
-              <TextField
-                autoComplete="name"
-                name="name"
-                required
-                fullWidth
-                id="name"
-                placeholder="Jon Snow"
-                error={nameError}
-                helperText={nameErrorMessage}
-                color={nameError ? 'error' : 'primary'}
-              />
-            </FormControl>
+           
             <FormControl>
               <FormLabel htmlFor="email">Email</FormLabel>
               <TextField
@@ -181,10 +168,7 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="I want to receive updates via email."
-            />
+           
             <Button
               type="submit"
               fullWidth
@@ -206,18 +190,11 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
             >
               Sign up with Google
             </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign up with Facebook')}
-              startIcon={<FacebookIcon />}
-            >
-              Sign up with Facebook
-            </Button>
+            
             <Typography sx={{ textAlign: 'center' }}>
               Already have an account?{' '}
               <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+                href="/LoginEnthusiast"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
