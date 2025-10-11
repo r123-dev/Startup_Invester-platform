@@ -1,12 +1,12 @@
 package com.vivek.backend.backend.service;
 
-import com.vivek.backend.dto.LoginRequest;
-import com.vivek.backend.dto.SignupRequest;
-import com.vivek.backend.model.Company;
-import com.vivek.backend.model.Enthusiast;
-import com.vivek.backend.repository.CompanyRepository;
-import com.vivek.backend.repository.EnthusiastRepository;
-import com.vivek.backend.security.JwtUtil;
+import com.vivek.backend.backend.dto.LoginRequest;
+import com.vivek.backend.backend.dto.SignupRequest;
+import com.vivek.backend.backend.model.Company;
+import com.vivek.backend.backend.model.Enthusiast;
+import com.vivek.backend.backend.repository.CompanyRepository;
+import com.vivek.backend.backend.repository.EnthusiastRepository;
+import com.vivek.backend.backend.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,12 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public String signup(SignupRequest request) {
-        if (request.getRole().equalsIgnoreCase("company")) {
+        int fieldCount = 0;
+        if (request.getCompanyName() != null) fieldCount++;
+        if (request.getRegNumber() != null) fieldCount++;
+        if (request.getSector() != null) fieldCount++;
+        if (request.getLocation() != null) fieldCount++;
+        if (fieldCount>3){
             Company company = Company.builder()
                     .companyName(request.getCompanyName())
                     .email(request.getEmail())
@@ -43,7 +48,8 @@ public class AuthService {
     }
 
     public String login(LoginRequest request) {
-        if (request.getRole().equalsIgnoreCase("company")) {
+        int fieldCount = 0;
+       if (request.getEmail()!=null) {
             Company company = companyRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new RuntimeException("Company not found"));
             if (!passwordEncoder.matches(request.getPassword(), company.getPassword()))

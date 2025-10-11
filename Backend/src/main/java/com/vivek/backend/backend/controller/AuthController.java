@@ -15,6 +15,10 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @GetMapping("/hello")
+    public String sayHello() {
+        return "Hello World";
+    }
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
         return ResponseEntity.ok(authService.signup(request));

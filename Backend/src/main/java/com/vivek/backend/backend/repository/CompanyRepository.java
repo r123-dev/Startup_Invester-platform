@@ -1,6 +1,6 @@
 package com.vivek.backend.backend.repository;
 
-import com.vivek.backend.model.Company;
+import com.vivek.backend.backend.model.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

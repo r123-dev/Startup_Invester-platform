@@ -10,8 +10,10 @@ import lombok.*;
 @Builder
 public class Enthusiast {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    @Column(nullable = false, unique = true) // email becomes the primary key
+   // private String email;
+
 
     private String email;
     private String password;
