@@ -32,7 +32,7 @@ export default function FloatingNavbar() {
         overflow: 'visible',
       }}
     >
-      {/* ======= Full-width animated gradient background ======= */}
+      {/* ======= Full-width static gradient background ======= */}
       <Box
         sx={{
           position: 'absolute',
@@ -40,17 +40,9 @@ export default function FloatingNavbar() {
           left: 0,
           width: '100%',
           height: '100%',
-          background:
-            'linear-gradient(90deg, #6a11cb, #2575fc, #ff0080, #6a11cb)',
-          backgroundSize: '400% 400%',
+          background: 'linear-gradient(90deg, #6a11cb, #2575fc, #ff0080)',
           filter: 'blur(20px)',
           opacity: 0.7,
-          animation: 'moveGradient 12s ease infinite',
-          '@keyframes moveGradient': {
-            '0%': { backgroundPosition: '0% 50%' },
-            '50%': { backgroundPosition: '100% 50%' },
-            '100%': { backgroundPosition: '0% 50%' },
-          },
         }}
       />
 
@@ -136,3 +128,4 @@ export default function FloatingNavbar() {
     </Box>
   );
 }
+
