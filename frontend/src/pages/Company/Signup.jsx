@@ -45,7 +45,7 @@ export default function SignupCompany() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // 🔗 API call -> http://localhost:PORT/api/company/signup
+    // 🔗 API call -> http://localhost:8080/api/auth/signup
     console.log("Signup data:", formData);
   };
 
