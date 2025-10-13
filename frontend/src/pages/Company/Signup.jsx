@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Paper,
@@ -6,7 +6,8 @@ import {
   TextField,
   Button,
   InputAdornment,
-  MenuItem,Link,
+  MenuItem,
+  Link,
 } from "@mui/material";
 import {
   Business,
@@ -15,8 +16,9 @@ import {
   LocationCity,
   Work,
   ConfirmationNumber,
-  ViewWeek,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
 
 const sectors = [
   "IT",
@@ -30,6 +32,7 @@ const sectors = [
 ];
 
 export default function SignupCompany() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     companyName: "",
     email: "",
@@ -39,39 +42,91 @@ export default function SignupCompany() {
     location: "",
   });
 
+  const [errors, setErrors] = useState({});
+
+  // ✅ Auto-redirect if token exists and valid
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        if (decoded.exp * 1000 > Date.now()) {
+          navigate("/Mainpage");
+        } else {
+          localStorage.removeItem("authToken");
+        }
+      } catch {
+        localStorage.removeItem("authToken");
+      }
+    }
+  }, [navigate]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // ✅ Simple frontend validation
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.companyName) newErrors.companyName = "Company name required";
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Valid email required";
+    if (!formData.password || formData.password.length < 6)
+      newErrors.password = "Password must be at least 6 characters";
+    if (!formData.regNumber) newErrors.regNumber = "Registration number required";
+    if (!formData.sector) newErrors.sector = "Sector required";
+    if (!formData.location) newErrors.location = "Location required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // 🔗 API call -> http://localhost:8080/api/auth/signup
-    console.log("Signup data:", formData);
+    if (!validate()) return;
+
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        // Save JWT token
+        if (result.token) {
+          localStorage.setItem("authToken", result.token);
+          navigate("/Mainpage");
+        } else {
+          alert("Signup successful but token not received");
+        }
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || "Signup failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Please try again later.");
+    }
   };
 
   return (
-    <Grid container sx={{ width:"100%",
-        Height:"100%",
-        overflow:"hidden",
-        position:"relative",
+    <Grid
+      container
+      sx={{
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        position: "relative",
         margin: 0,
-        padding:0
-    }}>
-      
-      <Grid
-        item
-        xs={12}
-        md={6}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        
-        
-       
-      >
+        padding: 0,
+      }}
+    >
+      <Grid item xs={12} md={6} display="flex" alignItems="center" justifyContent="center">
         <Paper
           elevation={6}
-          sx={{ p: 1.5, borderRadius: "20px", width: "80%", maxWidth: 450,position:"relative" }}
+          sx={{ p: 1.5, borderRadius: "20px", width: "80%", maxWidth: 450, position: "relative" }}
         >
           <Typography variant="h4" gutterBottom align="center">
             Company Sign Up
@@ -85,6 +140,8 @@ export default function SignupCompany() {
               name="companyName"
               value={formData.companyName}
               onChange={handleChange}
+              error={!!errors.companyName}
+              helperText={errors.companyName}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -102,6 +159,8 @@ export default function SignupCompany() {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              error={!!errors.email}
+              helperText={errors.email}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -119,6 +178,8 @@ export default function SignupCompany() {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              error={!!errors.password}
+              helperText={errors.password}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -135,6 +196,8 @@ export default function SignupCompany() {
               name="regNumber"
               value={formData.regNumber}
               onChange={handleChange}
+              error={!!errors.regNumber}
+              helperText={errors.regNumber}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -152,6 +215,8 @@ export default function SignupCompany() {
               name="sector"
               value={formData.sector}
               onChange={handleChange}
+              error={!!errors.sector}
+              helperText={errors.sector}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -174,6 +239,8 @@ export default function SignupCompany() {
               name="location"
               value={formData.location}
               onChange={handleChange}
+              error={!!errors.location}
+              helperText={errors.location}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -198,21 +265,16 @@ export default function SignupCompany() {
               Sign Up
             </Button>
 
-            <Typography
-  variant="body2"
-  align="center"
-  sx={{ mt: 2 }}
->
-  Already registered?{" "}
-  <Link href="/LoginCompany" underline="hover">
-    Sign in
-  </Link>
-</Typography>
+            <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+              Already registered?{" "}
+              <Link href="/LoginCompany" underline="hover">
+                Sign in
+              </Link>
+            </Typography>
           </form>
         </Paper>
       </Grid>
 
-      {/* Right Side Illustration */}
       <Grid
         item
         xs={false}
@@ -225,7 +287,6 @@ export default function SignupCompany() {
           color: "#fff",
           flexDirection: "column",
           textAlign: "center",
-          
           p: 4,
         }}
       >
@@ -239,3 +300,4 @@ export default function SignupCompany() {
     </Grid>
   );
 }
+
