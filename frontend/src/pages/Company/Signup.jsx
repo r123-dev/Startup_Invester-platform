@@ -81,35 +81,43 @@ export default function SignupCompany() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validate()) return;
 
+  try {
+    const response = await fetch("http://localhost:8080/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    // ✅ Read as plain text (works for both token string and JSON)
+    const text = await response.text();
+
+    let token = null;
     try {
-      const response = await fetch("http://localhost:8080/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        // Save JWT token
-        if (result.token) {
-          localStorage.setItem("authToken", result.token);
-          navigate("/Mainpage");
-        } else {
-          alert("Signup successful but token not received");
-        }
-      } else {
-        const errorData = await response.json();
-        alert(errorData.message || "Signup failed");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Please try again later.");
+      // If backend sends { token: "..." }
+      const data = JSON.parse(text);
+      token = data.token;
+    } catch {
+      // If backend sends raw token string (e.g. "eyJhbGciOi...")
+      token = text;
     }
-  };
+
+    if (response.ok && token) {
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("userRole", "company");
+      navigate("/Mainpage");
+    } else {
+      alert("Signup failed or token not received");
+    }
+  } catch (err) {
+    console.error("Error during signup:", err);
+    alert("Something went wrong. Please try again later.");
+  }
+};
+
 
   return (
     <Grid
