@@ -1,4 +1,11 @@
+
+
+
+
+
+
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -12,8 +19,10 @@ import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import LogoutIcon from "@mui/icons-material/Logout"; // 🔹 Sign Out icon
 
 export default function FloatingNavbar() {
+  const navigate = useNavigate(); // 🔹 For redirecting after sign out
   const [activeIndex, setActiveIndex] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -32,18 +41,22 @@ export default function FloatingNavbar() {
     const trimmed = searchText.trim();
     if (!trimmed) return;
 
-    // Set Home tab active and show search result
     setActiveIndex(0);
     setSearchResult(trimmed);
 
-    // Close input smoothly
     setTimeout(() => {
       setSearchOpen(false);
       setSearchText("");
     }, 100);
   };
 
-  // Render content based on active tab
+  // 🔹 Sign out handler
+  const handleSignOut = () => {
+    localStorage.removeItem("authToken"); // Remove JWT
+    localStorage.removeItem("userRole"); // Optional: role info
+    navigate("/"); // Redirect to login page
+  };
+
   const renderContent = () => {
     if (activeIndex === 0) {
       return (
@@ -95,7 +108,6 @@ export default function FloatingNavbar() {
           zIndex: 1200,
         }}
       >
-        {/* Gradient background */}
         <Box
           sx={{
             position: "absolute",
@@ -109,7 +121,6 @@ export default function FloatingNavbar() {
           }}
         />
 
-        {/* Navbar container */}
         <Box
           sx={{
             position: "absolute",
@@ -148,7 +159,16 @@ export default function FloatingNavbar() {
                   px: 3,
                 }}
               >
-                {/* Main navbar items */}
+                {/* 🔹 Sign Out Button on the leftmost */}
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mr: 2 }}>
+  <IconButton color="inherit" onClick={handleSignOut}>
+    <LogoutIcon />
+  </IconButton>
+  <Typography variant="caption" sx={{ fontSize: 12, mt: 0.3,fontWeight: 'bold' }}>
+    Switch Role
+  </Typography>
+</Box>
+
                 {items.map((item, idx) => {
                   const isActive = activeIndex === idx;
                   return (
@@ -182,7 +202,6 @@ export default function FloatingNavbar() {
                   );
                 })}
 
-                {/* Search button + label */}
                 <Box
                   sx={{
                     display: "flex",
@@ -239,14 +258,7 @@ export default function FloatingNavbar() {
         </Box>
       </Box>
 
-      {/* Render content below navbar */}
       <Box sx={{ mt: 10 }}>{renderContent()}</Box>
     </>
   );
 }
-
-
-
-
-
-

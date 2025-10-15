@@ -1,145 +1,9 @@
-// import React, { useState } from "react";
-// import {
-//   Grid,
-//   Paper,
-//   Typography,
-//   TextField,
-//   Button,
-//   InputAdornment,Link,
-// } from "@mui/material";
-// import { Email, Lock } from "@mui/icons-material";
 
-// export default function LoginCompany() {
-//   const [formData, setFormData] = useState({
-//     email: "",
-//     password: "",
-//   });
-
-//   const handleChange = (e) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     // 🔗 API call -> http://localhost:PORT/api/company/login
-//     console.log("Login data:", formData);
-//   };
-
-//   return (
-//     <Grid container sx={{ minHeight:"100vh"
-//         }}>
-//       {/* Left Side Form */}
-//       <Grid
-//         item
-//         xs={12}
-//         md={6}
-//         display="flex"
-//         alignItems="center"
-//         justifyContent="center"
-//       >
-//         <Paper
-//           elevation={6}
-//           sx={{ p: 3, borderRadius: "20px", width: "80%", maxWidth: 450 }}
-//         >
-//           <Typography variant="h4" gutterBottom align="center">
-//             Company Login
-//           </Typography>
-
-//           <form onSubmit={handleSubmit}>
-//             <TextField
-//               fullWidth
-//               margin="normal"
-//               label="Email"
-//               type="email"
-//               name="email"
-//               value={formData.email}
-//               onChange={handleChange}
-//               InputProps={{
-//                 startAdornment: (
-//                   <InputAdornment position="start">
-//                     <Email />
-//                   </InputAdornment>
-//                 ),
-//               }}
-//             />
-
-//             <TextField
-//               fullWidth
-//               margin="normal"
-//               label="Password"
-//               type="password"
-//               name="password"
-//               value={formData.password}
-//               onChange={handleChange}
-//               InputProps={{
-//                 startAdornment: (
-//                   <InputAdornment position="start">
-//                     <Lock />
-//                   </InputAdornment>
-//                 ),
-//               }}
-//             />
-
-//             <Button
-//               type="submit"
-//               fullWidth
-//               variant="contained"
-//               sx={{
-//                 mt: 3,
-//                 py: 1.5,
-//                 borderRadius: "30px",
-//                 fontSize: "16px",
-//                 background: "linear-gradient(to right, #667eea, #764ba2)",
-//               }}
-//             >
-//               Login
-//             </Button>
-//              <Typography
-//   variant="body2"
-//   align="center"
-//   sx={{ mt: 2 }}
-// >
-//   Not registered?{" "}
-//   <Link href="/SignupCompany" underline="hover">
-//     Signup
-//   </Link>
-// </Typography>
-//           </form>
-//         </Paper>
-//       </Grid>
-
-//       {/* Right Side Illustration */}
-//       <Grid
-//         item
-//         xs={false}
-//         md={6}
-//         sx={{
-//           background: "linear-gradient(to right, #667eea, #764ba2)",
-//           display: "flex",
-//           alignItems: "center",
-//           justifyContent: "center",
-//           color: "#fff",
-//           flexDirection: "column",
-//           textAlign: "center",
-//           p: 4,
-//         }}
-//       >
-//         <Typography variant="h3" fontWeight="bold" gutterBottom>
-//           Welcome Back
-//         </Typography>
-//         <Typography variant="h6">
-//           Login to manage your company services with Amazori.
-//         </Typography>
-//       </Grid>
-//     </Grid>
-//   );
-// }
 // import * as React from 'react';
+// import { useNavigate } from 'react-router-dom';
 // import Box from '@mui/material/Box';
 // import Button from '@mui/material/Button';
-// import Checkbox from '@mui/material/Checkbox';
 // import CssBaseline from '@mui/material/CssBaseline';
-// import FormControlLabel from '@mui/material/FormControlLabel';
 // import Divider from '@mui/material/Divider';
 // import FormLabel from '@mui/material/FormLabel';
 // import FormControl from '@mui/material/FormControl';
@@ -152,8 +16,10 @@
 // import ForgotPassword from '../components/ForgotPassword';
 // import AppTheme from '../shared-theme/AppTheme';
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
-// import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../components/CustomIcons';
+// import { GoogleIcon, SitemarkIcon } from '../components/CustomIcons';
+// import {jwtDecode} from 'jwt-decode'; // install: npm install jwt-decode
 
+// // Styled components
 // const Card = styled(MuiCard)(({ theme }) => ({
 //   display: 'flex',
 //   flexDirection: 'column',
@@ -197,36 +63,38 @@
 // }));
 
 // export default function SignIn(props) {
+//   const navigate = useNavigate();
+
 //   const [emailError, setEmailError] = React.useState(false);
 //   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
 //   const [passwordError, setPasswordError] = React.useState(false);
 //   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
 //   const [open, setOpen] = React.useState(false);
 
-//   const handleClickOpen = () => {
-//     setOpen(true);
-//   };
-
-//   const handleClose = () => {
-//     setOpen(false);
-//   };
-
-//   const handleSubmit = (event) => {
-//     if (emailError || passwordError) {
-//       event.preventDefault();
-//       return;
+//   // ✅ Check token validity and redirect if already logged in
+//   React.useEffect(() => {
+//     const token = localStorage.getItem('authToken');
+//     if (token) {
+//       try {
+//         const decoded = jwtDecode(token);
+//         if (decoded.exp * 1000 > Date.now()) {
+//           navigate('/Mainpage');
+//         } else {
+//           localStorage.removeItem('authToken');
+//         }
+//       } catch (error) {
+//         localStorage.removeItem('authToken');
+//       }
 //     }
-//     const data = new FormData(event.currentTarget);
-//     console.log({
-//       email: data.get('email'),
-//       password: data.get('password'),
-//     });
-//   };
+//   }, [navigate]);
 
+//   const handleClickOpen = () => setOpen(true);
+//   const handleClose = () => setOpen(false);
+
+//   // ✅ Input validation
 //   const validateInputs = () => {
 //     const email = document.getElementById('email');
 //     const password = document.getElementById('password');
-
 //     let isValid = true;
 
 //     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
@@ -250,6 +118,44 @@
 //     return isValid;
 //   };
 
+//   // ✅ Handle login API call
+//   const handleSubmit = async (event) => {
+//     event.preventDefault();
+//     if (!validateInputs()) return;
+
+//     const data = new FormData(event.currentTarget);
+//     const user = {
+//       email: data.get('email'),
+//       password: data.get('password'),
+//     };
+
+//     try {
+//       const response = await fetch('http://localhost:8080/api/auth/login', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(user),
+//       });
+
+//       if (response.ok) {
+//         const result = await response.json();
+
+//         // assuming backend returns { token: "JWT_TOKEN" }
+//         if (result.token) {
+//           localStorage.setItem('authToken', result.token);
+//           navigate('/Mainpage');
+//         } else {
+//           alert('Login failed: token not received');
+//         }
+//       } else {
+//         const errorData = await response.json();
+//         alert(errorData.message || 'Invalid email or password');
+//       }
+//     } catch (error) {
+//       console.error('Error:', error);
+//       alert('Something went wrong. Please try again later.');
+//     }
+//   };
+
 //   return (
 //     <AppTheme {...props}>
 //       <CssBaseline enableColorScheme />
@@ -264,16 +170,12 @@
 //           >
 //             Sign in
 //           </Typography>
+
 //           <Box
 //             component="form"
 //             onSubmit={handleSubmit}
 //             noValidate
-//             sx={{
-//               display: 'flex',
-//               flexDirection: 'column',
-//               width: '100%',
-//               gap: 2,
-//             }}
+//             sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
 //           >
 //             <FormControl>
 //               <FormLabel htmlFor="email">Email</FormLabel>
@@ -285,13 +187,13 @@
 //                 name="email"
 //                 placeholder="your@email.com"
 //                 autoComplete="email"
-//                 autoFocus
 //                 required
 //                 fullWidth
 //                 variant="outlined"
 //                 color={emailError ? 'error' : 'primary'}
 //               />
 //             </FormControl>
+
 //             <FormControl>
 //               <FormLabel htmlFor="password">Password</FormLabel>
 //               <TextField
@@ -302,23 +204,18 @@
 //                 type="password"
 //                 id="password"
 //                 autoComplete="current-password"
-//                 autoFocus
 //                 required
 //                 fullWidth
 //                 variant="outlined"
 //                 color={passwordError ? 'error' : 'primary'}
 //               />
 //             </FormControl>
-            
+
 //             <ForgotPassword open={open} handleClose={handleClose} />
-//             <Button
-//               type="submit"
-//               fullWidth
-//               variant="contained"
-//               onClick={validateInputs}
-//             >
+//             <Button type="submit" fullWidth variant="contained">
 //               Sign in
 //             </Button>
+
 //             <Link
 //               component="button"
 //               type="button"
@@ -329,6 +226,7 @@
 //               Forgot your password?
 //             </Link>
 //           </Box>
+
 //           <Divider>or</Divider>
 //           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 //             <Button
@@ -339,14 +237,10 @@
 //             >
 //               Sign in with Google
 //             </Button>
-            
+
 //             <Typography sx={{ textAlign: 'center' }}>
 //               Don&apos;t have an account?{' '}
-//               <Link
-//                 href="/SignupEnthusiast"
-//                 variant="body2"
-//                 sx={{ alignSelf: 'center' }}
-//               >
+//               <Link href="/SignupEnthusiast" variant="body2">
 //                 Sign up
 //               </Link>
 //             </Typography>
@@ -374,9 +268,9 @@ import ForgotPassword from '../components/ForgotPassword';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { GoogleIcon, SitemarkIcon } from '../components/CustomIcons';
-import {jwtDecode} from 'jwt-decode'; // install: npm install jwt-decode
+import { jwtDecode } from 'jwt-decode';
 
-// Styled components
+// 🎨 Styled components
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -385,9 +279,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: 'auto',
-  [theme.breakpoints.up('sm')]: {
-    maxWidth: '450px',
-  },
+  [theme.breakpoints.up('sm')]: { maxWidth: '450px' },
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   ...theme.applyStyles('dark', {
@@ -400,9 +292,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
   minHeight: '100%',
   padding: theme.spacing(2),
-  [theme.breakpoints.up('sm')]: {
-    padding: theme.spacing(4),
-  },
+  [theme.breakpoints.up('sm')]: { padding: theme.spacing(4) },
   '&::before': {
     content: '""',
     display: 'block',
@@ -428,7 +318,7 @@ export default function SignIn(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
 
-  // ✅ Check token validity and redirect if already logged in
+  // ✅ Auto redirect if token already valid
   React.useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (token) {
@@ -439,7 +329,7 @@ export default function SignIn(props) {
         } else {
           localStorage.removeItem('authToken');
         }
-      } catch (error) {
+      } catch {
         localStorage.removeItem('authToken');
       }
     }
@@ -448,70 +338,110 @@ export default function SignIn(props) {
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // ✅ Input validation
-  const validateInputs = () => {
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-    let isValid = true;
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+  // ✅ Validate inputs
+  const validateInputs = (email, password) => {
+    let valid = true;
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError(true);
       setEmailErrorMessage('Please enter a valid email address.');
-      isValid = false;
+      valid = false;
     } else {
       setEmailError(false);
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password || password.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage('Password must be at least 6 characters long.');
-      isValid = false;
+      valid = false;
     } else {
       setPasswordError(false);
       setPasswordErrorMessage('');
     }
-
-    return isValid;
+    return valid;
   };
 
-  // ✅ Handle login API call
+  // ✅ Handle login
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   const email = data.get('email');
+  //   const password = data.get('password');
+
+  //   if (!validateInputs(email, password)) return;
+
+  //   try {
+  //     const response = await fetch('http://localhost:8080/api/auth/login', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ email, password }),
+  //     });
+
+  //     let tokenData;
+  //     try {
+  //       tokenData = await response.json();
+  //     } catch {
+  //       tokenData = await response.text();
+  //     }
+
+  //     const token =
+  //       typeof tokenData === 'string' ? tokenData : tokenData.token;
+
+  //     if (response.ok && token) {
+  //       localStorage.setItem('authToken', token);
+  //       navigate('/Mainpage');
+  //     } else {
+  //       const message =
+  //         (tokenData && tokenData.message) || 'Invalid email or password';
+  //       alert(message);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error during login:', error);
+  //     alert('Something went wrong. Please try again later.');
+  //   }
+  // };
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!validateInputs()) return;
+  event.preventDefault();
+  const data = new FormData(event.currentTarget);
+  const email = data.get('email');
+  const password = data.get('password');
 
-    const data = new FormData(event.currentTarget);
-    const user = {
-      email: data.get('email'),
-      password: data.get('password'),
-    };
+  if (!validateInputs(email, password)) return;
 
-    try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user),
-      });
+  try {
+    const response = await fetch('http://localhost:8080/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
 
-      if (response.ok) {
-        const result = await response.json();
+    // ✅ Read content type safely — avoid reading twice
+    const contentType = response.headers.get('content-type');
+    let tokenData;
 
-        // assuming backend returns { token: "JWT_TOKEN" }
-        if (result.token) {
-          localStorage.setItem('authToken', result.token);
-          navigate('/Mainpage');
-        } else {
-          alert('Login failed: token not received');
-        }
-      } else {
-        const errorData = await response.json();
-        alert(errorData.message || 'Invalid email or password');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Something went wrong. Please try again later.');
+    if (contentType && contentType.includes('application/json')) {
+      tokenData = await response.json();
+    } else {
+      tokenData = await response.text();
     }
-  };
+
+    const token =
+      typeof tokenData === 'string' ? tokenData : tokenData.token;
+
+    if (response.ok && token) {
+      localStorage.setItem('authToken', token);
+      
+      navigate('/Mainpage');
+    } else {
+      const message =
+        (tokenData && tokenData.message) || 'Invalid email or password';
+      alert(message);
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    alert('Something went wrong. Please try again later.');
+  }
+};
 
   return (
     <AppTheme {...props}>
@@ -532,7 +462,12 @@ export default function SignIn(props) {
             component="form"
             onSubmit={handleSubmit}
             noValidate
-            sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              gap: 2,
+            }}
           >
             <FormControl>
               <FormLabel htmlFor="email">Email</FormLabel>
@@ -540,14 +475,12 @@ export default function SignIn(props) {
                 error={emailError}
                 helperText={emailErrorMessage}
                 id="email"
-                type="email"
                 name="email"
+                type="email"
                 placeholder="your@email.com"
                 autoComplete="email"
                 required
                 fullWidth
-                variant="outlined"
-                color={emailError ? 'error' : 'primary'}
               />
             </FormControl>
 
@@ -556,19 +489,18 @@ export default function SignIn(props) {
               <TextField
                 error={passwordError}
                 helperText={passwordErrorMessage}
-                name="password"
-                placeholder="••••••"
-                type="password"
                 id="password"
+                name="password"
+                type="password"
+                placeholder="••••••"
                 autoComplete="current-password"
                 required
                 fullWidth
-                variant="outlined"
-                color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
 
             <ForgotPassword open={open} handleClose={handleClose} />
+
             <Button type="submit" fullWidth variant="contained">
               Sign in
             </Button>
@@ -585,12 +517,20 @@ export default function SignIn(props) {
           </Box>
 
           <Divider>or</Divider>
+
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-           
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={() => alert('Sign in with Google')}
+              startIcon={<GoogleIcon />}
+            >
+              Sign in with Google
+            </Button>
 
             <Typography sx={{ textAlign: 'center' }}>
-              Don&apos;t have an account?{' '}
-              <Link href="/SignupCompany" variant="body2">
+              Don’t have an account?{' '}
+              <Link href="/SignupEnthusiast" variant="body2">
                 Sign up
               </Link>
             </Typography>

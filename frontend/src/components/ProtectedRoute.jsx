@@ -1,20 +1,33 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
-
-// Helper to check token validity
-const isTokenValid = (token) => {
-  try {
-    const decoded = jwtDecode(token);
-    return decoded.exp * 1000 > Date.now();
-  } catch (e) {
-    return false;
-  }
-};
+import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 export default function ProtectedRoute({ children }) {
-  const token = localStorage.getItem('token');
-  const valid = token && isTokenValid(token);
+  const [isValid, setIsValid] = useState(null);
 
-  return valid ? children : <Navigate to="/" replace />;
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setIsValid(false);
+      return;
+    }
+    try {
+      const decoded = jwtDecode(token);
+      if (decoded.exp * 1000 > Date.now()) {
+        setIsValid(true);
+      } else {
+        localStorage.removeItem("authToken");
+        setIsValid(false);
+      }
+    } catch (error) {
+      localStorage.removeItem("authToken");
+      setIsValid(false);
+    }
+  }, []);
+
+  if (isValid === null) {
+    return <div>Loading...</div>; // ⏳ Prevents redirect flash
+  }
+
+  return isValid ? children : <Navigate to="/" replace />;
 }
