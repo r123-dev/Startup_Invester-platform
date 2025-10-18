@@ -5,7 +5,8 @@ import SignupCompany from "./pages/Company/Signup";
 import LoginCompany from "./pages/Company/Login";
 import SignupEnthusiast from "./pages/Enthusiast/Signup"
 import LoginEnthusiast from "./pages/Enthusiast/Login"
-
+import Mainpage from "./pages/Mainpage";
+import ProtectedRoute from './components/ProtectedRoute'
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/SignupEnthusiast" element={<SignupEnthusiast role="Enthusiast" />} />
 
         <Route path="/LoginEnthusiast" element={<LoginEnthusiast/>}/>
+        <Route path="/Mainpage" element={<ProtectedRoute><Mainpage/></ProtectedRoute>}/>
       </Routes>
     </Router>
   );
