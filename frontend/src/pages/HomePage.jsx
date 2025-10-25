@@ -17,10 +17,10 @@ const HomePage = () => {
         position: "relative",
         margin: 0,
         padding: 0,
-        backgroundColor: "#000", // fallback
+        backgroundColor: "#000", 
       }}
     >
-      {/* Background Video */}
+     
       <video
         autoPlay
         loop
