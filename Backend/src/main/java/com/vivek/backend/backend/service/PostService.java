@@ -43,7 +43,8 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        Enthusiast enthusiast = enthusiastRepository.findByEmail(enthusiastEmail)
+        System.out.println(enthusiastEmail);
+        Enthusiast enthusiast = enthusiastRepository.findByEmailIgnoreCase(enthusiastEmail)
                 .orElseThrow(() -> new RuntimeException("Enthusiast not found"));
 
         if (post.getLikedBy().contains(enthusiast)) {

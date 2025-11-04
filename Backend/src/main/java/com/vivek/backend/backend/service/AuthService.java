@@ -91,7 +91,7 @@ public String login(LoginRequest request) {
     }
 
     // 2️⃣ Check if email belongs to an enthusiast
-    Optional<Enthusiast> enthusiastOpt = enthusiastRepository.findByEmail(email);
+    Optional<Enthusiast> enthusiastOpt = enthusiastRepository.findByEmailIgnoreCase(email);
 
     if (enthusiastOpt.isPresent()) {
         Enthusiast enthusiast = enthusiastOpt.get();
