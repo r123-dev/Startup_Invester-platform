@@ -65,7 +65,7 @@ export default function SignupCompany() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Simple frontend validation
+
   const validate = () => {
     const newErrors = {};
     if (!formData.companyName) newErrors.companyName = "Company name required";
@@ -92,16 +92,14 @@ export default function SignupCompany() {
       body: JSON.stringify(formData),
     });
 
-    // ✅ Read as plain text (works for both token string and JSON)
-    const text = await response.text();
+     const text = await response.text();
 
     let token = null;
     try {
-      // If backend sends { token: "..." }
       const data = JSON.parse(text);
       token = data.token;
     } catch {
-      // If backend sends raw token string (e.g. "eyJhbGciOi...")
+  
       token = text;
     }
 

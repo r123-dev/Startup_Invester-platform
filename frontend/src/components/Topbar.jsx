@@ -20,7 +20,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import LogoutIcon from "@mui/icons-material/Logout"; // 🔹 Sign Out icon
-
+import Home from "./Home";
+import Profile from "./Profile";
 export default function FloatingNavbar() {
   const navigate = useNavigate(); // 🔹 For redirecting after sign out
   const [activeIndex, setActiveIndex] = useState(0);
@@ -71,7 +72,7 @@ export default function FloatingNavbar() {
               </Typography>
             </>
           ) : (
-            <Typography variant="h6">🏠 Welcome Home!</Typography>
+            <Typography variant="h6"><Home/></Typography>
           )}
         </Box>
       );
@@ -90,7 +91,7 @@ export default function FloatingNavbar() {
     } else if (activeIndex === 3) {
       return (
         <Box sx={{ mt: 14, textAlign: "center" }}>
-          <Typography variant="h6">👤 Profile Section</Typography>
+          <Typography variant="h6"><Profile/></Typography>
         </Box>
       );
     }

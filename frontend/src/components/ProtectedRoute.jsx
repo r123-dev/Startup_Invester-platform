@@ -29,5 +29,5 @@ export default function ProtectedRoute({ children }) {
     return <div>Loading...</div>; // ⏳ Prevents redirect flash
   }
 
-  return isValid ? children : <Navigate to="/" replace />;
+  return isValid ?  children: <Navigate to="/" replace />;
 }

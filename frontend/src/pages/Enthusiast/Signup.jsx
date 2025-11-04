@@ -16,7 +16,8 @@ import { styled } from "@mui/material/styles";
 import AppTheme from "../shared-theme/AppTheme";
 import ColorModeSelect from "../shared-theme/ColorModeSelect";
 import { GoogleIcon, SitemarkIcon } from "../components/CustomIcons";
-
+import { jwtDecode } from "jwt-decode";
+import { useEffect} from "react";
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -63,12 +64,21 @@ export default function SignUp(props) {
   const navigate = useNavigate();
 
   // 👇 Auto redirect if token already exists
-  React.useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/Mainpage");
-    }
-  }, [navigate]);
+   useEffect(() => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          if (decoded.exp * 1000 > Date.now()) {
+            navigate("/Mainpage");
+          } else {
+            localStorage.removeItem("authToken");
+          }
+        } catch {
+          localStorage.removeItem("authToken");
+        }
+      }
+    }, [navigate]);
 
   const [formData, setFormData] = React.useState({
     email: "",
@@ -133,7 +143,7 @@ export default function SignUp(props) {
       // ✅ Save token
       localStorage.setItem('token', data.token);
       console.log('Signup successful');
-      navigate('/Mainpage');
+       navigate('/Mainpage', { replace: true });
     } else {
       alert(data.message || 'Signup failed');
     }
